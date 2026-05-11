@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep -l -i \"leeno\\\\|port.*3000\\\\|listen.*3000\")",
+      "Bash(xargs grep -l -i \"leeno\")",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Start-Process -FilePath \"node\" -ArgumentList \"server.js\" -WorkingDirectory \"C:\\\\Users\\\\msi\\\\Documents\\\\GitHub\\\\Leeno\" -WindowStyle Normal)"
+    ]
+  }
+}

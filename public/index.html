@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Leeno 💕">
+<meta name="theme-color" content="#060818">
+<title>Leeno 💕 — تطبيقكِ الشخصي</title>
+<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Leeno App&quot;,&quot;short_name&quot;:&quot;Leeno&quot;,&quot;start_url&quot;:&quot;.&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%23060818&quot;,&quot;theme_color&quot;:&quot;%23F48FB1&quot;}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --rose:#F48FB1;--rose2:#D81B60;--ivory:#FFFFF0;
+  --muted:#9FA8DA;--card:rgba(255,255,255,0.04);
+  --dark:#060818;--blue:#0b1035
+}
+html,body{
+  height:100%;width:100%;overflow:hidden;
+  background:var(--dark);
+  font-family:'Tajawal',sans-serif;direction:rtl;
+  -webkit-font-smoothing:antialiased
+}
+
+/* ── BG ── */
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+.bg-grad{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,#060818 0%,#0b1035 35%,#080d28 65%,#050814 100%)
+}
+.bg-img{
+  position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=40') center/cover;
+  opacity:0.05;filter:saturate(0.2)
+}
+.orb{position:absolute;border-radius:50%;animation:orbF ease-in-out infinite;pointer-events:none}
+.o1{width:350px;height:350px;background:radial-gradient(circle,rgba(244,143,177,0.13) 0%,transparent 70%);top:-100px;right:-80px;animation-duration:12s}
+.o2{width:260px;height:260px;background:radial-gradient(circle,rgba(80,60,200,0.1) 0%,transparent 70%);bottom:100px;left:-60px;animation-duration:9s;animation-delay:2s}
+.o3{width:200px;height:200px;background:radial-gradient(circle,rgba(244,143,177,0.08) 0%,transparent 70%);top:40%;right:-30px;animation-duration:14s;animation-delay:5s}
+@keyframes orbF{0%,100%{transform:translate(0,0)}33%{transform:translate(15px,22px)}66%{transform:translate(-10px,12px)}}
+#pts{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.pt{position:absolute;border-radius:50%;animation:ptUp linear infinite}
+@keyframes ptUp{0%{transform:translateY(100vh);opacity:0}5%{opacity:1}85%{opacity:0.4}100%{transform:translateY(-20px);opacity:0}}
+
+/* ── MAIN ── */
+#app{
+  position:fixed;inset:0;z-index:1;
+  display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:env(safe-area-inset-bottom)
+}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.screen::-webkit-scrollbar{display:none}
+
+/* ── STATUS BAR ── */
+.sbar{
+  height:44px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+  background:linear-gradient(180deg,rgba(6,8,24,0.8),transparent)
+}
+.sbar-time{color:rgba(255,255,255,0.7);font-size:13px;font-weight:700}
+.sbar-logo{
+  font-family:'Playfair Display',serif;font-size:15px;
+  color:var(--rose);font-style:italic;font-weight:700
+}
+
+/* ── HEADER ── */
+.hdr{padding:12px 20px 0;flex-shrink:0}
+.hdr-row{display:flex;align-items:flex-start;justify-content:space-between}
+.hdr-date{font-size:10px;color:rgba(244,143,177,0.6);font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.hdr-h1{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:#fff;line-height:1.1;letter-spacing:-0.5px}
+.hdr-h1 em{color:var(--rose);font-style:italic}
+.hdr-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px}
+.hdr-av{
+  width:50px;height:50px;border-radius:16px;overflow:hidden;flex-shrink:0;
+  border:1.5px solid rgba(244,143,177,0.4);
+  box-shadow:0 0 20px rgba(244,143,177,0.25)
+}
+.hdr-av img{width:100%;height:100%;object-fit:cover}
+
+/* ── CATEGORY PILLS ── */
+.cat-row{
+  display:flex;gap:8px;padding:14px 20px 0;
+  overflow-x:auto;-webkit-overflow-scrolling:touch
+}
+.cat-row::-webkit-scrollbar{display:none}
+.cpill{
+  flex-shrink:0;padding:8px 16px;border-radius:24px;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.08);
+  font-size:12px;font-weight:700;
+  color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.03);
+  white-space:nowrap;transition:all 0.3s;
+  font-family:'Tajawal',sans-serif
+}
+.cpill.on{
+  background:linear-gradient(135deg,var(--rose),var(--rose2));
+  border-color:transparent;color:#fff;
+  box-shadow:0 4px 20px rgba(244,143,177,0.45)
+}
+
+/* ── EXERCISE CARD ── */
+.ex-list{padding:14px 16px;display:flex;flex-direction:column;gap:14px}
+.exc{
+  border-radius:24px;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  transition:border-color 0.3s,box-shadow 0.3s
+}
+.exc.done{border-color:rgba(244,143,177,0.45);box-shadow:0 0 28px rgba(244,143,177,0.1)}
+.exv{
+  width:100%;height:145px;position:relative;overflow:hidden;
+  cursor:pointer;background:#060818
+}
+.exv img{width:100%;height:100%;object-fit:cover;opacity:0.88;transition:transform 0.4s}
+.exv:active img{transform:scale(1.03)}
+.exv-grad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(6,8,24,0.88) 100%)}
+.exv-tag{
+  position:absolute;top:10px;right:12px;
+  background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:9px;
+  padding:3px 10px;color:rgba(255,255,255,0.8);font-size:9px;font-weight:700
+}
+.play-pill{
+  position:absolute;bottom:10px;right:12px;
+  background:rgba(244,143,177,0.18);backdrop-filter:blur(10px);
+  border:1px solid rgba(244,143,177,0.35);border-radius:22px;
+  padding:5px 12px 5px 9px;display:flex;align-items:center;gap:6px
+}
+.pp-dot{
+  width:20px;height:20px;border-radius:10px;
+  background:linear-gradient(135deg,var(--rose),var(--rose2));
+  display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff
+}
+.pp-txt{color:var(--rose);font-size:10px;font-weight:700}
+.exb{display:flex;align-items:center;padding:13px 15px;gap:12px}
+.ex-ico{
+  width:46px;height:46px;border-radius:15px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04)
+}
+.ex-inf{flex:1}
+.ex-nm{color:#fff;font-size:15px;font-weight:800;margin-bottom:5px}
+.ex-bd{
+  display:inline-flex;padding:3px 10px;border-radius:9px;
+  font-size:10px;font-weight:700;
+  background:rgba(244,143,177,0.1);color:var(--rose);
+  border:1px solid rgba(244,143,177,0.18)
+}
+.ex-ck{
+  width:36px;height:36px;border-radius:12px;flex-shrink:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);
+  font-size:18px;transition:all 0.25s
+}
+.ex-ck.done{
+  background:linear-gradient(135deg,var(--rose),var(--rose2));
+  border-color:transparent;box-shadow:0 4px 16px rgba(244,143,177,0.45)
+}
+
+/* ── NUTRITION ── */
+.meal-list{padding:14px 16px;display:flex;flex-direction:column;gap:16px}
+.mlc{
+  border-radius:24px;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
+}
+.ml-img{width:100%;height:155px;position:relative;overflow:hidden}
+.ml-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+.ml-img:active img{transform:scale(1.03)}
+.ml-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.05) 30%,rgba(6,8,24,0.88) 100%)}
+.ml-name{
+  position:absolute;bottom:12px;right:14px;
+  font-family:'Playfair Display',serif;font-size:20px;font-weight:900;
+  color:#fff;text-shadow:0 2px 12px rgba(0,0,0,0.7)
+}
+.ml-time{
+  position:absolute;top:10px;left:12px;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.12);border-radius:10px;
+  padding:3px 10px;color:rgba(255,255,255,0.85);font-size:10px;font-weight:700
+}
+.ml-body{padding:14px 15px}
+.ml-items{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.ml-item{display:flex;align-items:center;gap:10px}
+.ml-dot{width:6px;height:6px;border-radius:3px;flex-shrink:0;background:linear-gradient(135deg,var(--rose),var(--rose2))}
+.ml-txt{color:rgba(255,255,255,0.85);font-size:13px;font-weight:500}
+.ali-note{
+  border-radius:16px;border:1px solid rgba(244,143,177,0.18);
+  padding:13px 15px;
+  background:linear-gradient(135deg,rgba(244,143,177,0.07),rgba(216,27,96,0.04))
+}
+.ali-hdr{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.ali-hrt{color:var(--rose);font-size:16px;display:inline-block;animation:hb 1.4s ease-in-out infinite}
+@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+.ali-from{font-size:10px;font-weight:800;color:var(--rose);letter-spacing:0.3px}
+.ali-txt{font-size:12.5px;color:rgba(255,255,255,0.85);line-height:1.8;font-style:italic}
+
+/* ── AI COACH ── */
+.ai-wrap{display:flex;flex-direction:column;height:100%}
+.ai-hero{padding:12px 18px;flex-shrink:0}
+.ccard{
+  display:flex;align-items:center;gap:14px;
+  background:linear-gradient(135deg,rgba(244,143,177,0.07),rgba(100,80,200,0.06));
+  border-radius:22px;border:1px solid rgba(244,143,177,0.15);
+  padding:15px;
+}
+.cav{
+  width:62px;height:62px;border-radius:20px;flex-shrink:0;overflow:hidden;
+  border:2px solid rgba(244,143,177,0.4);
+  box-shadow:0 0 22px rgba(244,143,177,0.3)
+}
+.cav img{width:100%;height:100%;object-fit:cover}
+.ci-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:2px}
+.ci-title{font-size:11px;color:rgba(244,143,177,0.75);font-weight:600;margin-bottom:8px}
+.ol{display:flex;align-items:center;gap:5px}
+.gd{width:7px;height:7px;border-radius:4px;background:#4CAF50;box-shadow:0 0 8px #4CAF5088;animation:gp 2s ease-in-out infinite}
+@keyframes gp{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.ol-t{font-size:10px;color:rgba(255,255,255,0.4)}
+.sbub{
+  background:rgba(255,255,255,0.04);backdrop-filter:blur(10px);
+  border-radius:18px;border:1px solid rgba(244,143,177,0.12);
+  padding:12px 16px;margin-top:11px;text-align:center;position:relative
+}
+.sbub::before{
+  content:'';position:absolute;top:-8px;right:50%;transform:translateX(50%);
+  border-bottom:8px solid rgba(244,143,177,0.12);
+  border-right:7px solid transparent;border-left:7px solid transparent
+}
+.st{color:rgba(255,255,255,0.75);font-size:13px;line-height:1.75}
+.st b{color:var(--rose)}
+.csep{height:1px;background:linear-gradient(90deg,transparent,rgba(244,143,177,0.15),transparent);margin:8px 16px;flex-shrink:0}
+.ca{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 16px;display:flex;flex-direction:column;gap:10px}
+.ca::-webkit-scrollbar{display:none}
+.brow{display:flex;align-items:flex-end;gap:8px}
+.brow.u{justify-content:flex-start}
+.brow.b{justify-content:flex-end}
+.bav{width:30px;height:30px;border-radius:11px;flex-shrink:0;overflow:hidden;border:1px solid rgba(244,143,177,0.3)}
+.bav img{width:100%;height:100%;object-fit:cover}
+.bub{
+  max-width:78%;border-radius:19px;
+  padding:10px 14px;font-size:13px;line-height:1.75
+}
+.bub.u{
+  background:linear-gradient(135deg,rgba(244,143,177,0.18),rgba(216,27,96,0.12));
+  color:#fff;border:1px solid rgba(244,143,177,0.22);border-bottom-left-radius:5px
+}
+.bub.b{
+  background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.9);
+  border:1px solid rgba(255,255,255,0.07);border-bottom-right-radius:5px
+}
+.tbub{
+  border-radius:19px;border-bottom-right-radius:5px;
+  border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.05);
+  padding:12px 16px;display:flex;gap:5px;align-items:center
+}
+.td{width:6px;height:6px;border-radius:3px;background:var(--rose);animation:bl 1.2s infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes bl{0%,80%,100%{opacity:0.15}40%{opacity:1}}
+.ibar{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px 16px;flex-shrink:0;
+  background:linear-gradient(0deg,rgba(6,8,24,0.95),transparent)
+}
+.cinp{
+  flex:1;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(244,143,177,0.2);border-radius:22px;
+  padding:12px 16px;color:#fff;font-family:'Tajawal',sans-serif;
+  font-size:14px;outline:none;direction:rtl
+}
+.cinp:focus{border-color:rgba(244,143,177,0.5)}
+.cinp::placeholder{color:rgba(255,255,255,0.28)}
+.sbtn{
+  width:46px;height:46px;border-radius:15px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--rose),var(--rose2));
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:#fff;
+  box-shadow:0 6px 22px rgba(244,143,177,0.45)
+}
+
+/* ── TAB BAR ── */
+.tbar{
+  height:68px;flex-shrink:0;
+  background:rgba(6,8,24,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-top:1px solid rgba(244,143,177,0.08);
+  display:flex;align-items:center;justify-content:space-around;
+  padding-bottom:env(safe-area-inset-bottom)
+}
+.tb{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  border:none;background:transparent;cursor:pointer;padding:8px 22px;
+  border-radius:18px;position:relative;min-width:70px
+}
+.ti{font-size:24px;transition:transform 0.25s,filter 0.25s}
+.tb.on .ti{transform:scale(1.18);filter:drop-shadow(0 0 7px rgba(244,143,177,0.75))}
+.tl{font-size:10px;font-weight:700;transition:color 0.25s;font-family:'Tajawal',sans-serif}
+.tb.on .tl{color:var(--rose)}.tb.off .tl{color:rgba(255,255,255,0.28)}
+.tln{
+  position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
+  height:2px;background:linear-gradient(90deg,var(--rose),var(--rose2));
+  border-radius:1px;transition:width 0.3s
+}
+.tb.on .tln{width:28px}.tb.off .tln{width:0}
+
+/* ── MODAL ── */
+.mdbg{
+  position:fixed;inset:0;background:rgba(0,0,0,0.82);
+  display:flex;align-items:flex-end;z-index:100;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  animation:fi .2s ease
+}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.mdsh{
+  width:100%;background:linear-gradient(170deg,#0d1240,#060818);
+  border-radius:30px 30px 0 0;
+  padding:22px 20px calc(20px + env(safe-area-inset-bottom));
+  border-top:1px solid rgba(244,143,177,0.2);
+  animation:su .25s ease;max-height:90vh;overflow-y:auto
+}
+@keyframes su{from{transform:translateY(60px)}to{transform:translateY(0)}}
+.mdh{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.12);margin:0 auto 18px}
+.md-vid{width:100%;height:150px;border-radius:18px;overflow:hidden;margin-bottom:14px;background:#060818}
+.md-vid img{width:100%;height:100%;object-fit:cover}
+.md-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;text-align:center;margin-bottom:14px}
+.steps{display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+.step{display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,0.03);border-radius:13px;padding:10px 13px;border:1px solid rgba(255,255,255,0.05)}
+.snum{width:24px;height:24px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,var(--rose),var(--rose2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;margin-top:1px}
+.stxt{color:rgba(255,255,255,0.85);font-size:12.5px;line-height:1.7}
+.mdcl{
+  width:100%;padding:14px;background:linear-gradient(135deg,var(--rose),var(--rose2));
+  border:none;border-radius:17px;color:#fff;font-family:'Tajawal',sans-serif;
+  font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:0 6px 24px rgba(244,143,177,0.4)
+}
+
+/* ── INSTALL BANNER ── */
+.install-banner{
+  position:fixed;bottom:80px;left:16px;right:16px;z-index:200;
+  background:linear-gradient(135deg,rgba(244,143,177,0.15),rgba(216,27,96,0.1));
+  border:1px solid rgba(244,143,177,0.3);border-radius:18px;
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+  backdrop-filter:blur(20px);animation:slideUp .4s ease;
+  box-shadow:0 8px 30px rgba(0,0,0,0.4)
+}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.ib-icon{font-size:28px;flex-shrink:0}
+.ib-txt{flex:1}
+.ib-t{color:#fff;font-size:13px;font-weight:800;margin-bottom:2px}
+.ib-s{color:rgba(255,255,255,0.6);font-size:11px}
+.ib-btn{
+  background:linear-gradient(135deg,var(--rose),var(--rose2));
+  border:none;border-radius:12px;padding:8px 14px;
+  color:#fff;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:800;cursor:pointer
+}
+.ib-close{background:transparent;border:none;color:rgba(255,255,255,0.4);font-size:20px;cursor:pointer;padding:4px}
+</style>
+</head>
+<body>
+
+<div id="bg">
+  <div class="bg-grad"></div>
+  <div class="bg-img"></div>
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+  <div id="pts"></div>
+</div>
+
+<div id="app">
+  <div class="sbar">
+    <span class="sbar-time" id="clock">9:41</span>
+    <span class="sbar-logo">Leeno ♥</span>
+    <span style="color:rgba(255,255,255,0.5);font-size:12px">💕</span>
+  </div>
+  <div class="screen" id="scr"></div>
+  <div class="tbar">
+    <button class="tb on" id="tw" onclick="sw('w')"><div class="ti">🏋️</div><div class="tl">تمارين</div><div class="tln"></div></button>
+    <button class="tb off" id="tn" onclick="sw('n')"><div class="ti">🥗</div><div class="tl">تغذية</div><div class="tln"></div></button>
+    <button class="tb off" id="ta" onclick="sw('a')"><div class="ti">💬</div><div class="tl">مدربكِ</div><div class="tln"></div></button>
+  </div>
+</div>
+
+<script>
+// ── Clock
+function updateClock(){
+  const n=new Date();
+  document.getElementById('clock').textContent=n.getHours()+':'+(n.getMinutes()<10?'0':'')+n.getMinutes();
+}
+updateClock();setInterval(updateClock,1000);
+
+// ── Particles
+const pts=document.getElementById('pts');
+const pc=['#F48FB1','#E91E8C','#9FA8DA','#7986CB'];
+for(let i=0;i<18;i++){
+  const p=document.createElement('div');p.className='pt';
+  const s=Math.random()*2.5+1;
+  p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;bottom:0;background:${pc[i%4]};opacity:${0.15+Math.random()*0.3};animation-duration:${7+Math.random()*10}s;animation-delay:${Math.random()*8}s`;
+  pts.appendChild(p);
+}
+
+// ── Data
+const D=new Date();
+const DN=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const MN=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const DS=DN[D.getDay()]+' '+D.getDate()+' '+MN[D.getMonth()];
+
+const COACH='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80';
+
+const THUMBS={
+  squat:'https://ymove.app/api/free/d65feff4-9891-4ff8-a9f9-64965da7b69c?type=thumbnail',
+  hip:'https://ymove.app/api/free/e0e8ce33-e39e-4e14-950b-2540be912c5b?type=thumbnail',
+  lateral:'https://ymove.app/api/free/1cce8f37-dd9f-442f-995e-be02b98a35ad?type=thumbnail',
+  row:'https://ymove.app/api/free/ae1f15b4-61f9-4da7-9ffe-0d8e72e6f097?type=thumbnail',
+  lunge:'https://ymove.app/api/free/166bf038-1670-4c52-9f32-cf6463556d99?type=thumbnail',
+  shoulder:'https://ymove.app/api/free/fb62140e-87c2-41f0-ada2-1d9be58664cf?type=thumbnail',
+  plank:'https://ymove.app/api/free/be8f26b0-4948-4f48-b851-1a9d2cfd953c?type=thumbnail',
+  rdl:'https://ymove.app/api/free/b7f3df3f-7371-4d29-bc59-3227fcdaa09a?type=thumbnail',
+};
+
+const CATS=[
+  {id:'legs',t:'أرجل وأرداف 🦵',exs:[
+    {n:'سكوات',d:'3 جولات × 15 تكرار',vid:'squat',steps:['قفي منتصبة، قدماكِ بعرض الكتفين','انزلي ببطء حتى زاوية 90 درجة','اضغطي الأرداف بقوة وارجعي للأعلى','تنفسي للأسفل وأخرجي الهواء عند الصعود']},
+    {n:'جسر الأرداف',d:'4 جولات × 20 تكرار',vid:'hip',steps:['استلقي على ظهركِ، ركبتاكِ مثنيتان','ارفعي الورك واضغطي الأرداف لثانيتين','حافظي على خط مستقيم من الركبة للكتف','انزلي ببطء دون لمس الأرض وكرري']},
+    {n:'رفع الساق جانبياً',d:'3 جولات × 15 تكرار',vid:'lateral',steps:['استلقي على جانبكِ، جسمكِ مستقيم','ارفعي الساق العليا ببطء حتى 45 درجة','توقفي لحظة واضغطي عضلة الورك','انزلي ببطء مع التحكم الكامل']},
+  ]},
+  {id:'chest',t:'صدر وأكتاف 💪',exs:[
+    {n:'ضغط الكتف بالدمبلز',d:'3 جولات × 12 تكرار',vid:'shoulder',steps:['اجلسي أو قفي، الدمبلز بكلتا يديكِ','ارفعي الدمبلز للأعلى حتى يستقيم ذراعاكِ','انزلي ببطء إلى مستوى الأذن','ركزي على الضغط من الكتف وليس الرقبة']},
+    {n:'رفع جانبي للأكتاف',d:'3 جولات × 10 تكرار',vid:'lateral',steps:['قفي منتصبة، الدمبلز على جانبيكِ','ارفعي الذراعين للجانب حتى مستوى الكتف','توقفي لحظة في الأعلى واشعري بالعضلة','انزلي ببطء مع التحكم الكامل']},
+    {n:'لانج بالدمبلز',d:'3 جولات × 12 تكرار',vid:'lunge',steps:['قفي منتصبة، الدمبلز بيديكِ','اخطي خطوة كبيرة للأمام وانزلي','الركبة الأمامية لا تتجاوز أصابع القدم','ارجعي وكرري مع الساق الأخرى']},
+  ]},
+  {id:'back',t:'ظهر وعمود فقري 🏋️',exs:[
+    {n:'سحب الدمبلز للظهر',d:'3 جولات × 12 تكرار',vid:'row',steps:['انحني للأمام بزاوية 45 درجة، ظهر مستقيم','أمسكي الدمبلز وذراعاكِ متدليتان','اسحبي نحو بطنكِ مع الضغط على الكتف','انزلي ببطء وأعيدي الحركة']},
+    {n:'رومانيان ديد ليفت',d:'3 جولات × 12 تكرار',vid:'rdl',steps:['قفي منتصبة، الدمبلز أمامكِ','انحني للأمام ببطء مع ظهر مستقيم','حتى تشعري بشد بالأوتار الخلفية','ارجعي للأعلى مع ضغط الأرداف']},
+    {n:'بلانك',d:'3 جولات × 30 ثانية',vid:'plank',steps:['ضعي ساعديكِ على الأرض، جسمكِ مستقيم','شدّي عضلات البطن بقوة','حافظي على رقبة محايدة تنظري للأسفل','تنفسي بانتظام ولا تحبسي الهواء']},
+  ]},
+  {id:'cardio',t:'كارديو وتحمل 🔥',exs:[
+    {n:'لانج متناوب',d:'3 جولات × 12 تكرار',vid:'lunge',steps:['قفي منتصبة، يديكِ على الوركين','اخطي للأمام بخطوة كبيرة وانزلي','ارجعي وكرري مع الساق الأخرى','حافظي على إيقاع ثابت ومنتظم']},
+    {n:'سكوات قفز',d:'3 جولات × 15 تكرار',vid:'squat',steps:['قفي منتصبة، قدماكِ بعرض الكتفين','انزلي للسكوات ببطء','اقفزي للأعلى بقوة عند الصعود','اهبطي بلطف وعودي للسكوات فوراً']},
+  ]},
+];
+
+const MEALS=[
+  {l:'الإفطار',t:'7:00 - 8:00 ص',c:'#FFD54F',
+   img:'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=600&q=80',
+   items:['شوفان بالعسل والموز 🍌','بيضتان مسلوقتان 🥚','شاي أخضر دافئ 🍵'],
+   note:'صباح الخير يا حياتي ♥️ هذا الإفطار سيمنحكِ طاقة رائعة تدوم طوال يومكِ الجميل'},
+  {l:'الغداء',t:'1:00 - 2:00 م',c:'#A5D6A7',
+   img:'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80',
+   items:['صدر دجاج مشوي 🍗','أرز بني أو كينوا 🌾','سلطة خضراء بزيت الزيتون 🥗'],
+   note:'كُلي هذا يا ملكتي لتبقى طاقتكِ متوهجة. البروتين يقوّي عضلاتكِ الجميلة 💪'},
+  {l:'العشاء',t:'7:00 - 8:00 م',c:'#CE93D8',
+   img:'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&q=80',
+   items:['سمك مشوي أو تونة 🐟','خضروات على البخار 🥦','شوربة عدس دافئة 🍲'],
+   note:'عشاء خفيف ومغذٍّ لتنامي بهدوء وعافية. أتمنى لكِ ليلة جميلة 🌙'},
+];
+
+let curCat='legs',curTab='w',mdData=null,doneExs={};
+let msgs=[{r:'b',t:'أهلاً وسهلاً Leeno 💕 أنا علي مدربكِ الشخصي، هنا دائماً من أجلكِ! اسأليني عن أي تمرين أو وجبة وسأجيبكِ فوراً 🌸'}];
+let aiTyping=false;
+
+// ── OPENAI KEY — ضع مفتاحك هنا
+const AI_KEY='';
+
+function imgEl(src,cls,h){
+  return `<img class="${cls||''}" src="${src}" alt="" style="${h?'height:'+h+'px;':''}" onerror="this.style.opacity=0.3">`;
+}
+
+// ── WORKOUT
+function workoutH(){
+  const cat=CATS.find(c=>c.id===curCat)||CATS[0];
+  let h=`<div class="hdr"><div class="hdr-row">
+    <div>
+      <div class="hdr-date">${DS}</div>
+      <div class="hdr-h1">تمارينكِ<br><em>اليوم</em></div>
+      <div class="hdr-sub">اجتهدي وأنا فخور بكِ ✨</div>
+    </div>
+    <div class="hdr-av">${imgEl(COACH,'',50)}</div>
+  </div></div>
+  <div class="cat-row">`;
+  CATS.forEach(c=>h+=`<div class="cpill ${c.id===curCat?'on':''}" onclick="curCat='${c.id}';render()">${c.t}</div>`);
+  h+=`</div><div class="ex-list">`;
+  cat.exs.forEach((ex,i)=>{
+    const k=curCat+i,done=!!doneExs[k];
+    h+=`<div class="exc ${done?'done':''}">
+      <div class="exv" onclick="openMd('${curCat}',${i})">
+        ${imgEl(THUMBS[ex.vid]||'','',145)}
+        <div class="exv-grad"></div>
+        <div class="exv-tag">${cat.t}</div>
+        <div class="play-pill"><div class="pp-dot">▶</div><span class="pp-txt">طريقة الأداء</span></div>
+      </div>
+      <div class="exb">
+        <div class="ex-ico">💪</div>
+        <div class="ex-inf">
+          <div class="ex-nm">${ex.n}</div>
+          <div class="ex-bd">${ex.d}</div>
+        </div>
+        <div class="ex-ck ${done?'done':''}" onclick="toggleEx('${k}')">
+          ${done?'<svg width=18 height=18 viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}
+        </div>
+      </div>
+    </div>`;
+  });
+  return h+`</div><div style="height:20px"></div>`;
+}
+
+// ── NUTRITION
+function nutritionH(){
+  let h=`<div class="hdr"><div class="hdr-row">
+    <div>
+      <div class="hdr-date">${DS}</div>
+      <div class="hdr-h1">تغذيتكِ<br><em>الصحية</em></div>
+      <div class="hdr-sub">صحتكِ أغلى شيء عندي 💕</div>
+    </div>
+    <div class="hdr-av">${imgEl(COACH,'',50)}</div>
+  </div></div><div class="meal-list">`;
+  MEALS.forEach(m=>{
+    h+=`<div class="mlc" style="border-top:2px solid ${m.c}">
+      <div class="ml-img">
+        ${imgEl(m.img,'',155)}
+        <div class="ml-grad"></div>
+        <div class="ml-time">⏰ ${m.t}</div>
+        <div class="ml-name">${m.l}</div>
+      </div>
+      <div class="ml-body">
+        <div class="ml-items">${m.items.map(it=>`<div class="ml-item"><div class="ml-dot"></div><div class="ml-txt">${it}</div></div>`).join('')}</div>
+        <div class="ali-note">
+          <div class="ali-hdr"><span class="ali-hrt">♥</span><span class="ali-from"> ملاحظة من مدربكِ علي عبدو</span></div>
+          <div class="ali-txt">${m.note}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  return h+`</div><div style="height:20px"></div>`;
+}
+
+// ── AI
+function aiH(){
+  let h=`<div class="ai-wrap"><div class="ai-hero">
+    <div class="ccard">
+      <div class="cav">${imgEl(COACH)}</div>
+      <div>
+        <div class="ci-name">علي عبدو</div>
+        <div class="ci-title">مدربكِ الشخصي المتخصص</div>
+        <div class="ol"><div class="gd"></div><span class="ol-t">متاح الآن</span></div>
+      </div>
+    </div>
+    <div class="sbub"><div class="st">أنا هنا من أجلكِ دائماً يا <b>Leeno ♥️</b><br>اسأليني عن أي شيء يخص تمارينكِ</div></div>
+  </div>
+  <div class="csep"></div>
+  <div class="ca" id="ca">`;
+  msgs.forEach(m=>{
+    if(m.r==='u') h+=`<div class="brow u"><div class="bub u">${m.t}</div></div>`;
+    else h+=`<div class="brow b"><div class="bub b">${m.t}</div><div class="bav">${imgEl(COACH)}</div></div>`;
+  });
+  if(aiTyping) h+=`<div class="brow b"><div class="tbub"><div class="td"></div><div class="td"></div><div class="td"></div></div><div class="bav">${imgEl(COACH)}</div></div>`;
+  h+=`</div>
+  <div class="ibar">
+    <button class="sbtn" onclick="sendChat()">➤</button>
+    <input class="cinp" id="ci2" placeholder="اسأليني أي سؤال يا Leeno…" onkeydown="if(event.key==='Enter')sendChat()">
+  </div></div>`;
+  return h;
+}
+
+function render(){
+  const scr=document.getElementById('scr');
+  if(curTab==='w') scr.innerHTML=workoutH();
+  else if(curTab==='n') scr.innerHTML=nutritionH();
+  else{scr.innerHTML=aiH();setTimeout(()=>{const a=document.getElementById('ca');if(a)a.scrollTop=a.scrollHeight},60)}
+}
+
+function sw(tab){
+  curTab=tab;
+  ['w','n','a'].forEach(t=>{
+    document.getElementById('t'+t).className='tb '+(t===tab?'on':'off');
+  });
+  render();
+}
+
+function toggleEx(k){doneExs[k]=!doneExs[k];render()}
+
+function openMd(cid,ei){
+  const cat=CATS.find(c=>c.id===cid),ex=cat.exs[ei];
+  const m=document.createElement('div');
+  m.className='mdbg';
+  m.onclick=e=>{if(e.target===m)m.remove()};
+  m.innerHTML=`<div class="mdsh">
+    <div class="mdh"></div>
+    <div class="md-title">${ex.n}</div>
+    <div class="md-vid">${imgEl(THUMBS[ex.vid]||'','',150)}</div>
+    <div class="steps">${ex.steps.map((s,i)=>`<div class="step"><div class="snum">${i+1}</div><div class="stxt">${s}</div></div>`).join('')}</div>
+    <button class="mdcl" onclick="this.closest('.mdbg').remove()">إغلاق ✕</button>
+  </div>`;
+  document.body.appendChild(m);
+}
+
+// ── AI Chat with fallback replies
+const FALLBACK=[
+  'لتحسين السكوات، ركزي على إبقاء ظهركِ مستقيماً وركبتاكِ لا تتجاوزان أصابع القدم. الاتساق هو المفتاح 💪',
+  'الماء سر جمالكِ وصحتكِ! احرصي على شرب 2 لتر يومياً خاصة قبل وبعد التمرين 💧',
+  'أيام الراحة مهمة جداً — عضلاتكِ تنمو أثناء الراحة وليس التمرين فقط 🌸',
+  'البروتين خلال 30 دقيقة بعد التمرين يساعد كثيراً في بناء العضلات. بيض أو دجاج مثالي 🍗',
+  'الثبات والمداومة هما السر — تمرين يومي منتظم أفضل بكثير من تمرين مكثف مرة بالأسبوع 🌟',
+  'للأرداف المثالية، ركزي على الإحساس بالعضلة في كل تكرار وليس فقط إنهاء العدد 🍑',
+];
+let fi=0;
+
+async function sendChat(){
+  const inp=document.getElementById('ci2');
+  const txt=inp?inp.value.trim():'';
+  if(!txt||aiTyping) return;
+  msgs.push({r:'u',t:txt});
+  inp.value='';
+  aiTyping=true;render();
+
+  if(AI_KEY && AI_KEY.startsWith('sk-')){
+    try{
+      const res=await fetch('https://api.openai.com/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEY},
+        body:JSON.stringify({
+          model:'gpt-4o-mini',max_tokens:300,
+          messages:[
+            {role:'system',content:'أنت علي عبدو، مدرب لياقة شخصي متخصص تتحدث مع Leeno. ردودك بالعربية، دافئة ومفيدة وقصيرة (3-4 جمل). قدم نصيحة عملية واضحة.'},
+            ...msgs.filter(m=>m.r==='u').slice(-5).map(m=>({role:'user',content:m.t})),
+            {role:'user',content:txt}
+          ]
+        })
+      });
+      const d=await res.json();
+      aiTyping=false;
+      msgs.push({r:'b',t:d.choices?.[0]?.message?.content||FALLBACK[fi++%FALLBACK.length]});
+    }catch(e){aiTyping=false;msgs.push({r:'b',t:FALLBACK[fi++%FALLBACK.length]});}
+  } else {
+    setTimeout(()=>{
+      aiTyping=false;
+      msgs.push({r:'b',t:FALLBACK[fi++%FALLBACK.length]});
+      render();
+      setTimeout(()=>{const a=document.getElementById('ca');if(a)a.scrollTop=a.scrollHeight},60);
+    },1400);
+    return;
+  }
+  render();
+  setTimeout(()=>{const a=document.getElementById('ca');if(a)a.scrollTop=a.scrollHeight},60);
+}
+
+// ── Install Banner
+function showInstallBanner(){
+  if(window.matchMedia('(display-mode: standalone)').matches) return;
+  if(localStorage.getItem('installDismissed')) return;
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid=/android/i.test(navigator.userAgent);
+  if(!isIOS && !isAndroid) return;
+  setTimeout(()=>{
+    const b=document.createElement('div');
+    b.className='install-banner';
+    b.innerHTML=`
+      <div class="ib-icon">📱</div>
+      <div class="ib-txt">
+        <div class="ib-t">احفظي التطبيق على شاشتكِ</div>
+        <div class="ib-s">${isIOS?'اضغطي Share ثم "Add to Home Screen"':'اضغطي قائمة المتصفح ثم "Add to Home Screen"'}</div>
+      </div>
+      <button class="ib-close" onclick="this.parentElement.remove();localStorage.setItem('installDismissed','1')">✕</button>`;
+    document.body.appendChild(b);
+  },3000);
+}
+
+showInstallBanner();
+render();
+</script>
+</body>
+</html>
