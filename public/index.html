@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html onkeydown="if(event.key==='Enter')doLogin()">
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -1050,7 +1050,7 @@ input[type="file"]{display:none}
         <div class="ff"><label id="lbl-name">الاسم الكامل</label><input id="r-name" placeholder="Ahmed Al-Khalidi"></div>
         <div class="ff"><label id="lbl-title">المسمى الوظيفي</label><input id="r-title" placeholder="Senior Software Engineer"></div>
         <div class="ff"><label id="lbl-email2">البريد الإلكتروني</label><input type="email" id="r-em" placeholder="name@email.com" dir="ltr"></div>
-        <div class="ff"><label id="lbl-pw2">كلمة المرور</label><input type="password" id="r-pw" placeholder="6+ أحرف"></div>
+        <div class="ff"><label id="lbl-pw2">كلمة المرور</label><input type="password" id="r-pw" placeholder="6+ أحرف" onkeydown="if(event.key==='Enter')doReg()"></div>
         <div class="ff"><label id="lbl-type2">نوع الحساب</label><select id="r-type"><option value="user">موظف / مهني</option><option value="company">شركة</option></select></div>
         <button class="s-btn" onclick="doReg()"><svg width="14" height="14"><use href="#i-spark"/></svg><span id="btn-create">إنشاء حساب والدفع</span></button>
       </div>
@@ -2238,7 +2238,7 @@ function aTab(tab,el){
   ['login','reg','co'].forEach(id=>{const f=document.getElementById('af-'+id);if(f)f.style.display='none';});
   document.getElementById('af-'+tab).style.display='block';
 }
-const API='http://localhost:3000/api';
+const API=window.location.origin+'/api';
 
 async function doLogin(){
   var em=document.getElementById('l-em')?.value.trim();
@@ -2275,8 +2275,18 @@ async function doLogin(){
     S.user.plan=u.plan||'pro';
     S.isCo=(type==='company');
     // Go to dashboard
-    if(type==='company'){doDemoCompany();}
-    else{go('dash-user');}
+    if(type==='company'){
+      doDemoCompany();
+    } else {
+      // Update UI elements with user data
+      var nameEl=document.getElementById('d-name');
+      if(nameEl)nameEl.textContent=u.name;
+      var initEl=document.getElementById('d-init');
+      if(initEl)initEl.textContent=S.user.init;
+      var slugEl=document.getElementById('d-slug');
+      if(slugEl)slugEl.textContent='repify.iq/'+u.slug;
+      go('dash-user');
+    }
     toast(LANG==='ar'?'✓ مرحباً '+u.name:'✓ Welcome '+u.name);
   }catch(err){
     toast(LANG==='ar'?'خطأ في الاتصال — تأكد من تشغيل السيرفر':'Connection error — make sure server is running');
