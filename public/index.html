@@ -2319,12 +2319,14 @@ async function doLogin(){
       var avEl=document.getElementById('av-btn');if(avEl)avEl.textContent=S.user.init;
       // Show dashboard
       document.querySelectorAll('.page,.dash').forEach(function(e){e.classList.remove('on');});
+      document.querySelectorAll('.page,.dash').forEach(function(e){e.classList.remove('on');});
       var dash=document.getElementById('dash-user');
       if(dash){
         dash.style.display='flex';
         dash.classList.add('on');
       }
       updateDashboardUI();
+      setTimeout(animBars,500);
     }
     toast(LANG==='ar'?'✓ مرحباً '+u.name:'✓ Welcome '+u.name);
   }catch(err){
@@ -2382,15 +2384,27 @@ function doCoReg(){
 }
 function doDemo(){
   S.isCo=false;
-  syncU();document.querySelectorAll('.page,.dash').forEach(e=>e.classList.remove('on'));
-  document.getElementById('dash-user').classList.add('on');setTimeout(animBars,500);
+  // Set demo data
+  S.user.name='Ahmed Al-Khalidi';
+  S.user.init='AK';
+  S.user.slug='ahmed-k';
+  S.user.role='Senior Software Engineer';
+  S.user.location='Baghdad, Iraq';
+  S.user.plan='pro';
+  syncU();
+  document.querySelectorAll('.page,.dash').forEach(function(e){e.classList.remove('on');});
+  var d=document.getElementById('dash-user');
+  if(d){d.style.display='flex';d.classList.add('on');}
+  updateDashboardUI();
+  setTimeout(animBars,500);
   toast(LANG==='ar'?'أهلاً — وضع تجريبي (موظف)':'Welcome — Employee demo');
 }
 function doDemoCompany(){
   S.isCo=true;
   buildGrids();renderJobs();
-  document.querySelectorAll('.page,.dash').forEach(e=>e.classList.remove('on'));
-  document.getElementById('dash-company').classList.add('on');
+  document.querySelectorAll('.page,.dash').forEach(function(e){e.classList.remove('on');});
+  var d=document.getElementById('dash-company');
+  if(d){d.style.display='flex';d.classList.add('on');}
   toast(LANG==='ar'?'أهلاً — وضع تجريبي (شركة)':'Welcome — Company demo');
 }
 function doLogout(){closeDD('av-dd');closeDD('av-dd2');go('landing');toast(LANG==='ar'?'تم تسجيل الخروج':'Signed out');}
@@ -4141,15 +4155,17 @@ function setupSkip(){
 }
 
 function updateDashboardUI(){
-  var els=['d-name','av-btn','av-btn2'];
-  for(var i=0;i<els.length;i++){
-    var el=document.getElementById(els[i]);
-    if(el&&S.user.init)el.textContent=S.user.init;
-  }
-  var nameEl=document.getElementById('d-name');if(nameEl&&S.user.name)nameEl.textContent=S.user.name;
-  var roleEl=document.getElementById('d-role');if(roleEl&&S.user.role)roleEl.textContent=S.user.role;
-  var locEl=document.getElementById('d-loc');if(locEl&&S.user.location)locEl.textContent=S.user.location;
-  var slugEl=document.getElementById('d-slug');if(slugEl&&S.user.slug)slugEl.textContent='repify.iq/'+S.user.slug;
+  // Update name elements
+  var nameEl=document.getElementById('d-name');if(nameEl)nameEl.textContent=S.user.name||'';
+  var roleEl=document.getElementById('d-role');if(roleEl)roleEl.textContent=S.user.role||'';
+  var locEl=document.getElementById('d-loc');if(locEl)locEl.textContent=S.user.location||'';
+  var slugEl=document.getElementById('d-slug');if(slugEl)slugEl.textContent=S.user.slug?'repify.iq/'+S.user.slug:'';
+  // Update avatar buttons
+  var avBtn=document.getElementById('av-btn');if(avBtn)avBtn.textContent=S.user.init||'?';
+  var avBtn2=document.getElementById('av-btn2');if(avBtn2)avBtn2.textContent=S.user.init||'?';
+  // Update sidebar name
+  var sbName=document.getElementById('sb-name');if(sbName)sbName.textContent=S.user.name||'';
+  var sbRole=document.getElementById('sb-role');if(sbRole)sbRole.textContent=S.user.role||'';
 }
 
 </script>
