@@ -2278,14 +2278,24 @@ async function doLogin(){
     if(type==='company'){
       doDemoCompany();
     } else {
-      // Update UI elements with user data
-      var nameEl=document.getElementById('d-name');
-      if(nameEl)nameEl.textContent=u.name;
-      var initEl=document.getElementById('d-init');
-      if(initEl)initEl.textContent=S.user.init;
-      var slugEl=document.getElementById('d-slug');
-      if(slugEl)slugEl.textContent='repify.iq/'+u.slug;
-      go('dash-user');
+      // Update state
+      S.user.name=u.name;
+      S.user.slug=u.slug||'user';
+      S.user.init=u.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+      S.user.plan=u.plan||'pro';
+      S.isCo=false;
+      // Update UI
+      var nameEl=document.getElementById('d-name');if(nameEl)nameEl.textContent=u.name;
+      var initEl=document.getElementById('d-init');if(initEl)initEl.textContent=S.user.init;
+      var slugEl=document.getElementById('d-slug');if(slugEl)slugEl.textContent='repify.iq/'+S.user.slug;
+      var avEl=document.getElementById('av-btn');if(avEl)avEl.textContent=S.user.init;
+      // Show dashboard
+      document.querySelectorAll('.page,.dash').forEach(function(e){e.classList.remove('on');});
+      var dash=document.getElementById('dash-user');
+      if(dash){
+        dash.style.display='flex';
+        dash.classList.add('on');
+      }
     }
     toast(LANG==='ar'?'✓ مرحباً '+u.name:'✓ Welcome '+u.name);
   }catch(err){
