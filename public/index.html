@@ -1155,6 +1155,34 @@ input[type="file"]{display:none}
   </div>
 </div></div>
 </div>
+<!-- PROFILE SETUP PAGE -->
+<div class="page" id="pg-setup">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)">
+    <div style="width:100%;max-width:520px">
+      <div style="text-align:center;margin-bottom:32px">
+        <div style="font-family:'Inter',sans-serif;font-size:1.8rem;font-weight:900;background:var(--gt);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">REPIFY</div>
+        <div style="font-size:1.1rem;font-weight:700;color:var(--tx);margin-bottom:6px" id="setup-title">أكمل ملفك المهني</div>
+        <div style="font-size:13px;color:var(--tx3)" id="setup-sub">هذه المعلومات ستظهر في ملفك الموثق</div>
+      </div>
+      <div class="cd" style="padding:28px">
+        <!-- Progress -->
+        <div style="display:flex;gap:6px;margin-bottom:24px">
+          <div style="flex:1;height:4px;border-radius:2px;background:var(--bl)"></div>
+          <div style="flex:1;height:4px;border-radius:2px;background:var(--bg2)" id="setup-p2"></div>
+          <div style="flex:1;height:4px;border-radius:2px;background:var(--bg2)" id="setup-p3"></div>
+        </div>
+        <div id="setup-step1">
+          <div class="ff"><label>المسمى الوظيفي *</label><input id="setup-role" placeholder="مثال: Senior Developer, مهندس مدني..."></div>
+          <div class="ff"><label>الموقع *</label><input id="setup-location" placeholder="البصرة، بغداد، عن بُعد..."></div>
+          <div class="ff" style="margin-bottom:0"><label>نبذة مختصرة</label><textarea id="setup-bio" placeholder="اكتب نبذة مختصرة عن نفسك وخبرتك..." style="min-height:80px"></textarea></div>
+        </div>
+        <button class="btn bp" style="width:100%;margin-top:20px" onclick="setupNext()"><span id="setup-btn-txt">التالي</span> →</button>
+        <button class="btn bg2" style="width:100%;margin-top:8px" onclick="setupSkip()" id="setup-skip-btn">تخطي الآن</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- USER DASHBOARD -->
 <div class="dash" id="dash-user">
   <nav class="dtop">
@@ -1166,7 +1194,7 @@ input[type="file"]{display:none}
       <div class="avw">
         <div class="avb en" id="av-btn" onclick="openDD('av-btn','av-dd')"><span id="av-init">AK</span></div>
         <div class="avd" id="av-dd">
-          <div class="avdu"><div class="avdn en" id="av-name">Ahmed Al-Khalidi</div><div class="avde">ahmed@email.com</div></div>
+          <div class="avdu"><div class="avdn en" id="av-name"><span class="d-name-txt">المستخدم</span></div><div class="avde">ahmed@email.com</div></div>
           <button class="avdi" onclick="showP('about',null);closeDD('av-dd')"><div class="avic"><svg width="13" height="13"><use href="#i-user"/></svg></div><span id="dd-profile">الملف الشخصي</span></button>
           <button class="avdi" onclick="T('Settings...');closeDD('av-dd')"><div class="avic"><svg width="13" height="13"><use href="#i-set"/></svg></div><span id="dd-settings">الإعدادات</span></button>
           <div style="height:1px;background:var(--br);margin:5px 0"></div>
@@ -1244,8 +1272,8 @@ input[type="file"]{display:none}
               <div class="ph-vb">✓</div>
             </div>
             <div class="ph-inf">
-              <div class="ph-nm en" id="d-name">Ahmed Al-Khalidi</div>
-              <div class="ph-rl" id="d-role">Senior Software Engineer · 5 Years</div>
+              <div class="ph-nm en" id="d-name"></div>
+              <div class="ph-rl" id="d-role"> · 5 Years</div>
               <div class="ph-mt"><span>📍 <span id="d-loc">Basra, Iraq</span></span></div>
             </div>
             <div class="sco">
@@ -2210,7 +2238,7 @@ function setLang(lang){
 
 /* ═══ APP STATE ═══ */
 const S={
-  user:{name:'Ahmed Al-Khalidi',email:'ahmed@email.com',plan:'pro',init:'AK',slug:'ahmed-k'},
+  user:{name:'',email:'',plan:'free',init:'',slug:'',role:'',location:'',bio:'',id:null},
   plans:{
     pro:  {name:'Pro',  iqd:5000,  fee:100, total:5100,  feats:['Complete verified profile','Blockchain verification','Digital identity link','Verified reviews','AI CV','Visual ID']},
     elite:{name:'Elite',iqd:10000, fee:200, total:10200, feats:['Everything in Pro +','Priority in search','Elite badge','Analytics','AI matching','Dedicated support']},
@@ -4065,6 +4093,63 @@ function logout(){
       localStorage.removeItem('repify_token');
     });
 })();
+
+
+
+/* ═══ PROFILE SETUP ═══ */
+async function setupNext(){
+  var role=document.getElementById('setup-role')&&document.getElementById('setup-role').value.trim();
+  var loc=document.getElementById('setup-location')&&document.getElementById('setup-location').value.trim();
+  var bio=document.getElementById('setup-bio')&&document.getElementById('setup-bio').value.trim();
+
+  if(!role){toast(LANG==='ar'?'أدخل المسمى الوظيفي':'Enter job title');return;}
+  if(!loc){toast(LANG==='ar'?'أدخل موقعك':'Enter your location');return;}
+
+  // Save to DB
+  var token=localStorage.getItem('repify_token');
+  if(token){
+    try{
+      await fetch(API+'/users/me',{
+        method:'PUT',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body:JSON.stringify({name:S.user.name,role:role,location:loc,bio:bio})
+      });
+    }catch(e){}
+  }
+
+  // Update state
+  S.user.role=role;
+  S.user.location=loc;
+  S.user.bio=bio;
+
+  // Update UI
+  var roleEl=document.getElementById('d-role');if(roleEl)roleEl.textContent=role;
+  var locEl=document.getElementById('d-loc');if(locEl)locEl.textContent=loc;
+
+  // Go to dashboard
+  setupSkip();
+  toast(LANG==='ar'?'✓ تم حفظ ملفك المهني':'✓ Profile saved!');
+}
+
+function setupSkip(){
+  document.querySelectorAll('.page,.dash').forEach(function(e){e.classList.remove('on');});
+  var dash=document.getElementById('dash-user');
+  if(dash){dash.style.display='flex';dash.classList.add('on');}
+  // Update all name elements
+  updateDashboardUI();
+}
+
+function updateDashboardUI(){
+  var els=['d-name','av-btn','av-btn2'];
+  for(var i=0;i<els.length;i++){
+    var el=document.getElementById(els[i]);
+    if(el&&S.user.init)el.textContent=S.user.init;
+  }
+  var nameEl=document.getElementById('d-name');if(nameEl&&S.user.name)nameEl.textContent=S.user.name;
+  var roleEl=document.getElementById('d-role');if(roleEl&&S.user.role)roleEl.textContent=S.user.role;
+  var locEl=document.getElementById('d-loc');if(locEl&&S.user.location)locEl.textContent=S.user.location;
+  var slugEl=document.getElementById('d-slug');if(slugEl&&S.user.slug)slugEl.textContent='repify.iq/'+S.user.slug;
+}
 
 </script>
 </body>
